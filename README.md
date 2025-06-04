@@ -19,19 +19,21 @@ To klasyczna gra Tetris napisana w czystym JavaScript, HTML i CSS. Gra działa w
 ## Struktura projektu
 
 ```
-tetris-3d-game
+tetris-game
 ├── index.html      # Główny plik HTML
 ├── styles.css      # Styl gry
 ├── main.js         # Cała logika gry
-└── README.md           # Dokumentacja
+└── README.md       # Dokumentacja
 ```
 
 ## Jak uruchomić?
-
-1. Pobierz lub sklonuj repozytorium.
-2. Otwórz plik `public/index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
-3. Gra działa od razu – nie wymaga serwera ani instalacji!
-
+  ### Lokalnie
+  1. Pobierz lub sklonuj repozytorium.
+  2. Otwórz plik `index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
+  3. Gra działa od razu – nie wymaga serwera ani instalacji!
+     
+  ###  Online
+  1. Otwórz stronę: https://nickymb.github.io/tetris-game/
 ## Acknowledgments
 
 Made using GPT-4.1 (04.06.2025)
