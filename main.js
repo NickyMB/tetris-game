@@ -106,13 +106,27 @@ class Board {
 
 // --- SCORE ---
 class Score {
-    constructor() { this.score = 0; }
+    constructor() {
+        this.score = 0;
+        this.lines = 0;
+        this.level = 1; // zaczynamy od poziomu 1
+    }
     addScore(linesCleared) {
-        const points = [0, 40, 100, 300, 1200][linesCleared] || 0;
-        this.score += points;
+        if (linesCleared > 0) {
+            this.lines += linesCleared;
+            this.level = Math.floor(this.lines / 10) + 1; // poziom rośnie co 10 linii, start od 1
+            const basePoints = [0, 40, 100, 300, 1200][linesCleared] || 0;
+            this.score += basePoints * this.level;
+        }
     }
     getScore() { return this.score; }
-    resetScore() { this.score = 0; }
+    getLines() { return this.lines; }
+    getLevel() { return this.level; }
+    resetScore() {
+        this.score = 0;
+        this.lines = 0;
+        this.level = 0;
+    }
 }
 
 // --- PREVIEW (uniwersalny dla next i hold) ---
@@ -355,14 +369,24 @@ class Tetris {
         this.updatePreviews();
     }
     dropBlock() {
-        while (this.moveBlock(0, 1)) { }
+        let dropDistance = 0;
+        while (this.moveBlock(0, 1)) {
+            dropDistance++;
+        }
+        if (dropDistance > 0) {
+            this.score.score += dropDistance; // 1 punkt za każdą komórkę hard dropa (bez mnożnika)
+            this.hud.update(this.score.getScore(), this.score.getLines(), this.score.getLevel());
+        }
         this.lockBlock();
     }
     lockBlock() {
         this.board.placeBlock(this.currentBlock);
         const lines = this.board.clearLines();
+        const prevLevel = this.score.getLevel();
         this.score.addScore(lines);
-        this.hud.update(this.score.getScore());
+        this.hud.update(this.score.getScore(), this.score.getLines(), this.score.getLevel());
+        // Przyśpieszanie: im wyższy poziom, tym szybciej
+        this.dropInterval = Math.max(100, 500 - (this.score.getLevel() - 1) * 40);
         this.spawnNewBlock();
     }
     loop() {
@@ -379,7 +403,7 @@ class Tetris {
     }
     initControls() {
         document.addEventListener('keydown', (e) => {
-            if (this.isGameOver) return; // <-- poprawka: dodaj nawiasy!
+            if (this.isGameOver) return;
             switch (e.key) {
                 case 'ArrowLeft':
                     this.moveBlock(-1, 0);
@@ -388,7 +412,10 @@ class Tetris {
                     this.moveBlock(1, 0);
                     break;
                 case 'ArrowDown':
-                    this.moveBlock(0, 1);
+                    if (this.moveBlock(0, 1)) {
+                        this.score.score += 1; // 1 punkt za soft drop (bez mnożnika)
+                        this.hud.update(this.score.getScore(), this.score.getLines(), this.score.getLevel());
+                    }
                     break;
                 case 'ArrowUp':
                     this.rotateBlock();
@@ -408,7 +435,9 @@ class Tetris {
 // --- HUD ---
 class HUD {
     constructor(element) { this.element = element; }
-    update(score) { this.element.innerText = `Score: ${score}`; }
+    update(score, lines, level) {
+        this.element.innerText = `Score: ${score}\nLines: ${lines}\nLevel: ${level}`;
+    }
 }
 
 // --- UTILS ---
