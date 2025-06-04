@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris 3D Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="side-panel">
+            <div id="hud">
+                Score: 0
+            </div>
+            <div>
+                <div class="label">Next</div>
+                <div id="next-block-preview" class="preview-block"></div>
+            </div>
+            <div>
+                <div class="label">Hold</div>
+                <div id="hold-block-preview" class="hold-block"></div>
+            </div>
+            <div class="controls-tip">Sterowanie: strzałki, spacja (drop), C (hold)</div>
+            <button id="reset-btn"
+                style="margin-top:16px; padding:8px 20px; font-size:1em; border-radius:6px; border:none; background:#222; color:#fff; cursor:pointer;">
+                Reset
+            </button>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>

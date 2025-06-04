@@ -1,0 +1,133 @@
+body {
+  background: #181c22;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+#game-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px; /* mniejszy odstęp */
+  margin: 0 auto;
+  padding: 32px 0;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 0 32px #0004;
+  max-width: 700px;
+}
+
+#gameCanvas {
+  background: #111;
+  box-shadow: 0 0 16px #000a;
+  border-radius: 8px;
+  display: block;
+}
+
+#side-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 120px;
+  max-width: 140px;
+}
+
+.preview-block,
+.hold-block {
+  display: grid;
+  grid-template-rows: repeat(4, 24px);
+  grid-template-columns: repeat(4, 24px);
+  gap: 2px;
+  background: #222;
+  border-radius: 6px;
+  padding: 6px;
+  min-width: 112px;
+  min-height: 112px;
+  margin: 0 auto;
+}
+
+.block {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  box-shadow: 0 0 4px #000a;
+  border: 2px solid #fff4;
+  background: linear-gradient(145deg, #00eaff 60%, #0ff 100%);
+}
+
+.block.t {
+  background: linear-gradient(145deg, #a259ff 60%, #7c3aed 100%);
+}
+.block.o {
+  background: linear-gradient(145deg, #ffe066 60%, #ffd60a 100%);
+}
+.block.s {
+  background: linear-gradient(145deg, #51fa7b 60%, #00ff66 100%);
+}
+.block.z {
+  background: linear-gradient(145deg, #ff6b6b 60%, #ff1744 100%);
+}
+.block.l {
+  background: linear-gradient(145deg, #ffb86b 60%, #ff9100 100%);
+}
+.block.j {
+  background: linear-gradient(145deg, #6bbaff 60%, #2979ff 100%);
+}
+
+#hud {
+  font-size: 1.3em;
+  color: #fff;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.label {
+  color: #fff;
+  font-size: 1em;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+.controls-tip {
+  color: #aaa;
+  font-size: 0.95em;
+  margin-top: 10px;
+  text-align: center;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 2px solid #fff;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 20px;
+}
+
+.preview {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+}
+
+.score {
+  margin: 0;
+}
+
+.controls {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+}
