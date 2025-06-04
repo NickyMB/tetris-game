@@ -108,7 +108,7 @@ class Board {
 class Score {
     constructor() { this.score = 0; }
     addScore(linesCleared) {
-        const points = [0, 100, 300, 500, 800][linesCleared] || 0;
+        const points = [0, 40, 100, 300, 1200][linesCleared] || 0;
         this.score += points;
     }
     getScore() { return this.score; }
