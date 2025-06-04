@@ -33,15 +33,6 @@ tetris-3d-game
 2. Otwórz plik `public/index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
 3. Gra działa od razu – nie wymaga serwera ani instalacji!
 
-## Zrzut ekranu
+## Acknowledgments
 
-_(Wstaw tutaj zrzut ekranu jeśli chcesz)_
-
-## Licencja
-
-MIT
-
----
-
-**Uwaga:**  
-Poprzednia wersja korzystała z Three.js i wielu plików JS – obecna wersja to czysty, lokalny Tetris 2D w jednym pliku JS, bez zależności.
+Made using GPT-4.1 (04.06.2025)
