@@ -27,11 +27,13 @@ tetris-game
 ```
 
 ## Jak uruchomić?
-
-1. Pobierz lub sklonuj repozytorium.
-2. Otwórz plik `public/index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
-3. Gra działa od razu – nie wymaga serwera ani instalacji!
-
+  ### Lokalnie
+  1. Pobierz lub sklonuj repozytorium.
+  2. Otwórz plik `index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
+  3. Gra działa od razu – nie wymaga serwera ani instalacji!
+     
+  ###  Online
+  1. Otwórz stronę: https://nickymb.github.io/tetris-game/
 ## Acknowledgments
 
 Made using GPT-4.1 (04.06.2025)
