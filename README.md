@@ -1,62 +1,47 @@
-# Tetris 3D Game
+# Tetris Game (HTML5/JS)
 
-## Overview
-This project is a 3D implementation of the classic Tetris game. It features standard Tetris gameplay mechanics, including the ability to hold one block, a preview of the next block, and a scoring system. The game is built using JavaScript and utilizes Three.js for rendering 3D graphics.
+## Opis
 
-## Features
-- **3D Graphics**: Experience Tetris in a new dimension with 3D-rendered blocks and game board.
-- **Next Block Preview**: See the next tetromino that will appear, allowing for strategic gameplay.
-- **Hold Block Feature**: Players can hold one block and swap it with the current block.
-- **Scoring System**: Track your score based on the number of lines cleared.
+To klasyczna gra Tetris napisana w czystym JavaScript, HTML i CSS. Gra działa w 100% lokalnie – nie wymaga serwera ani instalacji żadnych zależności. Zawiera podgląd następnego klocka, możliwość przetrzymania jednego klocka, licznik punktów oraz intuicyjny interfejs.
 
-## Project Structure
+## Funkcje
+
+- **Klasyczny gameplay Tetrisa**
+- **Podgląd następnego klocka**
+- **Możliwość przetrzymania jednego klocka (hold)**
+- **Licznik punktów**
+- **Reset gry jednym przyciskiem**
+- **Sterowanie:**
+  - Strzałki – ruch i obrót
+  - Spacja – szybki drop
+  - C – przetrzymanie klocka
+
+## Struktura projektu
+
 ```
 tetris-3d-game
-├── src
-│   ├── index.js          # Entry point of the game
-│   ├── game
-│   │   ├── tetris.js     # Game logic and state management
-│   │   ├── board.js      # Game board management
-│   │   ├── block.js      # Tetris block definitions
-│   │   ├── score.js      # Scoring system
-│   │   └── hold.js       # Hold block functionality
-│   ├── graphics
-│   │   ├── renderer.js    # 3D rendering logic
-│   │   └── threejs-setup.js # Three.js environment setup
-│   ├── ui
-│   │   ├── controls.js    # User input handling
-│   │   ├── preview.js     # Next block preview management
-│   │   └── hud.js         # Heads-up display management
-│   └── utils
-│       └── helpers.js     # Utility functions
 ├── public
-│   ├── index.html         # Main HTML file
-│   └── styles.css         # Game styles
-├── package.json           # npm configuration
-└── README.md              # Project documentation
+│   ├── index.html      # Główny plik HTML
+│   ├── styles.css      # Styl gry
+│   └── main.js         # Cała logika gry
+└── README.md           # Dokumentacja
 ```
 
-## Getting Started
-1. **Clone the repository**:
-   ```
-   git clone <repository-url>
-   cd tetris-3d-game
-   ```
+## Jak uruchomić?
 
-2. **Install dependencies**:
-   ```
-   npm install
-   ```
+1. Pobierz lub sklonuj repozytorium.
+2. Otwórz plik `public/index.html` w dowolnej nowoczesnej przeglądarce (np. Chrome, Firefox, Edge).
+3. Gra działa od razu – nie wymaga serwera ani instalacji!
 
-3. **Run the game**:
-   ```
-   npm start
-   ```
+## Zrzut ekranu
 
-4. **Open your browser** and navigate to `http://localhost:3000` to play the game.
+_(Wstaw tutaj zrzut ekranu jeśli chcesz)_
 
-## Contributing
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+## Licencja
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT
+
+---
+
+**Uwaga:**  
+Poprzednia wersja korzystała z Three.js i wielu plików JS – obecna wersja to czysty, lokalny Tetris 2D w jednym pliku JS, bez zależności.
