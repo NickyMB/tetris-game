@@ -19,7 +19,15 @@ class Block {
     }
     static getRandomBlock() {
         const shapes = [
-            { shape: [[1, 1, 1, 1]], type: 'i' }, // I
+            // I-block jako 4x4, środek na (1,1)
+            {
+                shape: [
+                    [0, 0, 0, 0],
+                    [1, 1, 1, 1],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ], type: 'i'
+            },
             { shape: [[1, 1], [1, 1]], type: 'o' }, // O
             { shape: [[0, 1, 0], [1, 1, 1]], type: 't' }, // T
             { shape: [[1, 1, 0], [0, 1, 1]], type: 's' }, // S
@@ -30,6 +38,15 @@ class Block {
         const randomIndex = getRandomInt(0, shapes.length);
         const { shape, type } = shapes[randomIndex];
         return new Block(shape, type);
+    }
+    getCenterOffset() {
+        if (this.type === 'i') {
+            return { x: 1, y: 1 };
+        }
+        return {
+            x: (this.shape[0].length - 1) / 2,
+            y: (this.shape.length - 1) / 2
+        };
     }
 }
 
@@ -47,10 +64,10 @@ class Board {
         block.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value) {
-                    const px = block.position.x + x;
-                    const py = block.position.y + y;
+                    const px = Math.floor(block.position.x + x);
+                    const py = Math.floor(block.position.y + y);
                     if (py >= 0 && py < this.height && px >= 0 && px < this.width)
-                        this.grid[py][px] = block.type; // <-- zapisz typ bloku zamiast 1
+                        this.grid[py][px] = block.type;
                 }
             });
         });
@@ -74,14 +91,13 @@ class Board {
         return block.shape.every((row, y) => {
             return row.every((value, x) => {
                 if (value === 0) return true;
-                const newX = x + pos.x;
-                const newY = y + pos.y;
+                const newX = Math.floor(x + pos.x);
+                const newY = Math.floor(y + pos.y);
                 return (
                     newX >= 0 &&
                     newX < this.width &&
                     newY < this.height &&
-                    newY >= 0 &&
-                    this.grid[newY][newX] === 0
+                    (newY < 0 || (this.grid[newY] && this.grid[newY][newX] === 0))
                 );
             });
         });
@@ -252,12 +268,24 @@ class Tetris {
     }
     spawnNewBlock() {
         this.currentBlock = this.nextBlock;
-        this.currentBlock.position = { x: 3, y: 0 };
+        const center = this.currentBlock.getCenterOffset();
+        if (this.currentBlock.type === 'o') {
+            this.currentBlock.position = {
+                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
+                y: 0
+            };
+        } else {
+            this.currentBlock.position = {
+                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2) - center.x + 1,
+                y: 0
+            };
+        }
         this.nextBlock = Block.getRandomBlock();
-        this.canHold = true; // reset po każdym locku
+        this.canHold = true;
         this.updatePreviews();
         if (!this.board.isPositionValid(this.currentBlock, this.currentBlock.position)) {
             this.isGameOver = true;
+            this.renderer.render(this.board, this.currentBlock);
             alert('Game Over! Score: ' + this.score.getScore());
         }
     }
@@ -271,9 +299,36 @@ class Tetris {
     }
     rotateBlock() {
         const oldShape = JSON.parse(JSON.stringify(this.currentBlock.shape));
+        const oldPos = { ...this.currentBlock.position };
+
         this.currentBlock.rotate();
-        if (!this.board.isPositionValid(this.currentBlock, this.currentBlock.position)) {
+
+        // Wall kick: próbuj przesunąć blok w lewo/prawo/górę jeśli nie pasuje
+        const kicks = [
+            { x: 0, y: 0 },
+            { x: -1, y: 0 },
+            { x: 1, y: 0 },
+            { x: -2, y: 0 },
+            { x: 2, y: 0 },
+            { x: 0, y: -1 },
+            { x: 0, y: 1 }
+        ];
+        let rotated = false;
+        for (const kick of kicks) {
+            const testPos = {
+                x: this.currentBlock.position.x + kick.x,
+                y: this.currentBlock.position.y + kick.y
+            };
+            if (this.board.isPositionValid(this.currentBlock, testPos)) {
+                this.currentBlock.position = testPos;
+                rotated = true;
+                break;
+            }
+        }
+        if (!rotated) {
+            // Cofnij obrót i pozycję jeśli nie można obrócić
             this.currentBlock.shape = oldShape;
+            this.currentBlock.position = oldPos;
         }
     }
     holdBlock() {
@@ -284,11 +339,17 @@ class Tetris {
             const temp = this.hold.heldBlock;
             this.hold.heldBlock = this.currentBlock;
             this.currentBlock = temp;
-            this.currentBlock.position = { x: 3, y: 0 };
+            this.currentBlock.position = {
+                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
+                y: 0
+            };
         } else {
             this.hold.heldBlock = this.currentBlock;
             this.currentBlock = this.nextBlock;
-            this.currentBlock.position = { x: 3, y: 0 };
+            this.currentBlock.position = {
+                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
+                y: 0
+            };
             this.nextBlock = Block.getRandomBlock();
         }
         this.updatePreviews();
@@ -318,7 +379,7 @@ class Tetris {
     }
     initControls() {
         document.addEventListener('keydown', (e) => {
-            if (this.isGameOver) return;
+            if (this.isGameOver) return; // <-- poprawka: dodaj nawiasy!
             switch (e.key) {
                 case 'ArrowLeft':
                     this.moveBlock(-1, 0);
