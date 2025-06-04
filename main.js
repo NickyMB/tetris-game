@@ -196,7 +196,7 @@ class Renderer {
         canvas.width = board.width * this.blockSize;
         canvas.height = board.height * this.blockSize;
     }
-    render(board, currentBlock) {
+    render(board, currentBlock, ghostPosition = null) {
         this.ctx.fillStyle = '#111';
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         // Draw board
@@ -215,6 +215,30 @@ class Renderer {
                     this.ctx.restore();
                 }
             }
+        }
+        // Draw ghost piece (obrys + wypełnienie)
+        if (currentBlock && ghostPosition) {
+            currentBlock.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        const px = ghostPosition.x + x;
+                        const py = ghostPosition.y + y;
+                        // Wypełnienie
+                        this.ctx.save();
+                        this.ctx.globalAlpha = 0.15;
+                        this.ctx.fillStyle = getBlockColor(currentBlock.type);
+                        this.ctx.fillRect(px * this.blockSize, py * this.blockSize, this.blockSize, this.blockSize);
+                        this.ctx.restore();
+                        // Obrys
+                        this.ctx.save();
+                        this.ctx.globalAlpha = 0.4;
+                        this.ctx.strokeStyle = getBlockColor(currentBlock.type);
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(px * this.blockSize, py * this.blockSize, this.blockSize, this.blockSize);
+                        this.ctx.restore();
+                    }
+                });
+            });
         }
         // Draw current block
         if (currentBlock) {
@@ -299,7 +323,7 @@ class Tetris {
         this.updatePreviews();
         if (!this.board.isPositionValid(this.currentBlock, this.currentBlock.position)) {
             this.isGameOver = true;
-            this.renderer.render(this.board, this.currentBlock);
+            this.renderer.render(this.board, this.currentBlock, this.getGhostPosition());
             alert('Game Over! Score: ' + this.score.getScore());
         }
     }
@@ -348,25 +372,49 @@ class Tetris {
     holdBlock() {
         if (!this.canHold) return; // tylko raz na blok
         this.canHold = false;
+        const center = (block) => block.getCenterOffset();
         if (this.hold.heldBlock) {
             // Zamiana: current <-> hold
             const temp = this.hold.heldBlock;
             this.hold.heldBlock = this.currentBlock;
             this.currentBlock = temp;
-            this.currentBlock.position = {
-                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
-                y: 0
-            };
+            const c = center(this.currentBlock);
+            if (this.currentBlock.type === 'o') {
+                this.currentBlock.position = {
+                    x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
+                    y: 0
+                };
+            } else {
+                this.currentBlock.position = {
+                    x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2) - c.x + 1,
+                    y: 0
+                };
+            }
         } else {
             this.hold.heldBlock = this.currentBlock;
             this.currentBlock = this.nextBlock;
-            this.currentBlock.position = {
-                x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
-                y: 0
-            };
+            const c = center(this.currentBlock);
+            if (this.currentBlock.type === 'o') {
+                this.currentBlock.position = {
+                    x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2),
+                    y: 0
+                };
+            } else {
+                this.currentBlock.position = {
+                    x: Math.floor((this.board.width - this.currentBlock.shape[0].length) / 2) - c.x + 1,
+                    y: 0
+                };
+            }
             this.nextBlock = Block.getRandomBlock();
         }
         this.updatePreviews();
+
+        // DODAJ TO: sprawdź czy nowy blok się mieści, jeśli nie - koniec gry
+        if (!this.board.isPositionValid(this.currentBlock, this.currentBlock.position)) {
+            this.isGameOver = true;
+            this.renderer.render(this.board, this.currentBlock, this.getGhostPosition());
+            alert('Game Over! Score: ' + this.score.getScore());
+        }
     }
     dropBlock() {
         let dropDistance = 0;
@@ -398,7 +446,7 @@ class Tetris {
             }
             this.lastDrop = now;
         }
-        this.renderer.render(this.board, this.currentBlock);
+        this.renderer.render(this.board, this.currentBlock, this.getGhostPosition());
         requestAnimationFrame(() => this.loop());
     }
     initControls() {
@@ -430,11 +478,23 @@ class Tetris {
             }
         });
     }
+
+    getGhostPosition() {
+        // Find the lowest position the current block can go
+        const ghost = { ...this.currentBlock, position: { ...this.currentBlock.position } };
+        let pos = { ...ghost.position };
+        while (this.board.isPositionValid(ghost, { x: pos.x, y: pos.y + 1 })) {
+            pos.y += 1;
+        }
+        return pos;
+    }
 }
 
 // --- HUD ---
 class HUD {
-    constructor(element) { this.element = element; }
+    constructor(element) {
+        this.element = element;
+    }
     update(score, lines, level) {
         this.element.innerText = `Score: ${score}\nLines: ${lines}\nLevel: ${level}`;
     }
