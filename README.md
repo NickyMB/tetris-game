@@ -19,11 +19,11 @@ To klasyczna gra Tetris napisana w czystym JavaScript, HTML i CSS. Gra działa w
 ## Struktura projektu
 
 ```
-tetris-3d-game
+tetris-game
 ├── index.html      # Główny plik HTML
 ├── styles.css      # Styl gry
 ├── main.js         # Cała logika gry
-└── README.md           # Dokumentacja
+└── README.md       # Dokumentacja
 ```
 
 ## Jak uruchomić?
